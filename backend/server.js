@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Serve widget files from public directory
+app.use(express.static('public'));
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'VAPI Proxy Server is running' });

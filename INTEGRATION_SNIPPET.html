@@ -1,0 +1,52 @@
+<!--
+  VAPI Courtney Widget Integration
+
+  Copy and paste this snippet into your HTML, right before the closing </body> tag.
+  Replace YOUR_RAILWAY_URL with your actual Railway deployment URL.
+-->
+
+<!-- Widget Container -->
+<div id="courtney-widget"></div>
+
+<!-- Load Widget CSS -->
+<link rel="stylesheet" href="YOUR_RAILWAY_URL/courtney-widget.css">
+
+<!-- Load Widget JavaScript -->
+<script src="YOUR_RAILWAY_URL/courtney-widget.umd.js"></script>
+
+<!-- Initialize Widget -->
+<script>
+  CourtneyWidget.init({
+    target: '#courtney-widget',
+    apiEndpoint: 'YOUR_RAILWAY_URL/api/chat',
+    publicKey: '99d4ee33-0c22-4f57-a457-2266fab4a844',
+    assistantId: '31409e97-631c-48e0-89f5-4b6ba0f1c1df'
+  });
+</script>
+
+<!--
+  CUSTOMIZATION OPTIONS:
+
+  1. Change widget placement:
+     - Modify the #courtney-widget div ID and update target parameter
+     - Place the div wherever you want the widget to appear
+
+  2. Use different VAPI assistant:
+     - Change publicKey and assistantId to your own VAPI credentials
+
+  3. Multiple widgets on same page:
+     - Use different IDs for each widget container
+     - Call CourtneyWidget.init() for each one
+
+  EXAMPLE: Custom Placement
+
+  <div id="my-support-widget"></div>
+  <script>
+    CourtneyWidget.init({
+      target: '#my-support-widget',
+      apiEndpoint: 'YOUR_RAILWAY_URL/api/chat',
+      publicKey: 'your-public-key',
+      assistantId: 'your-assistant-id'
+    });
+  </script>
+-->
