@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIVE Courtney Widget Test - Railway Deployment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .demo-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #0a4728;
+        }
+        .highlight {
+            background: #e1f700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .status {
+            background: #10B981;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .url-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-content">
+        <div class="status">🚀 DEPLOYED ON RAILWAY</div>
+        <h1>Live Courtney Widget Test</h1>
+        <p>This widget is now <span class="highlight">LIVE on Railway</span> and ready for production!</p>
+
+        <div class="url-info">
+            <strong>Railway URL:</strong> https://vapi-embed-production.up.railway.app
+        </div>
+
+        <h2>What's Working</h2>
+        <ul>
+            <li>✅ Backend API running on Railway</li>
+            <li>✅ Widget JavaScript served from CDN</li>
+            <li>✅ Widget CSS with Tailwind styles</li>
+            <li>✅ CORS enabled for cross-origin requests</li>
+            <li>✅ VAPI integration configured</li>
+        </ul>
+
+        <h2>Features</h2>
+        <ul>
+            <li>💬 Text chat with AI assistant</li>
+            <li>🎤 Voice call integration</li>
+            <li>⭐ User feedback collection</li>
+            <li>🎨 CourtsApp branding</li>
+        </ul>
+
+        <h2>Look at the bottom right corner!</h2>
+        <p>The bright yellow floating button is your embeddable widget.</p>
+    </div>
+
+    <!-- Widget Container -->
+    <div id="courtney-widget"></div>
+
+    <!-- Load Widget CSS from Railway -->
+    <link rel="stylesheet" href="https://vapi-embed-production.up.railway.app/courtney-widget.css">
+
+    <!-- Load Widget JavaScript from Railway -->
+    <script src="https://vapi-embed-production.up.railway.app/courtney-widget.umd.js"></script>
+
+    <!-- Initialize Widget -->
+    <script>
+        CourtneyWidget.init({
+            target: '#courtney-widget',
+            apiEndpoint: 'https://vapi-embed-production.up.railway.app/api/chat',
+            publicKey: '99d4ee33-0c22-4f57-a457-2266fab4a844',
+            assistantId: '31409e97-631c-48e0-89f5-4b6ba0f1c1df'
+        });
+
+        console.log('✅ Courtney Widget initialized successfully from Railway!');
+    </script>
+</body>
+</html>

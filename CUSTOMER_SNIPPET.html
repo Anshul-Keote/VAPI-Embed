@@ -1,0 +1,65 @@
+<!--
+  ═══════════════════════════════════════════════════════════════
+  COURTNEY AI SUPPORT WIDGET - READY TO USE
+  ═══════════════════════════════════════════════════════════════
+
+  Copy this entire snippet and paste it into your HTML file,
+  right before the closing </body> tag.
+
+  That's it! No configuration needed.
+  ═══════════════════════════════════════════════════════════════
+-->
+
+<!-- Widget Container -->
+<div id="courtney-widget"></div>
+
+<!-- Load Widget CSS -->
+<link rel="stylesheet" href="https://vapi-embed-production.up.railway.app/courtney-widget.css">
+
+<!-- Load Widget JavaScript -->
+<script src="https://vapi-embed-production.up.railway.app/courtney-widget.umd.js"></script>
+
+<!-- Initialize Widget -->
+<script>
+  CourtneyWidget.init({
+    target: '#courtney-widget',
+    apiEndpoint: 'https://vapi-embed-production.up.railway.app/api/chat',
+    publicKey: '99d4ee33-0c22-4f57-a457-2266fab4a844',
+    assistantId: '31409e97-631c-48e0-89f5-4b6ba0f1c1df'
+  });
+</script>
+
+<!--
+  ═══════════════════════════════════════════════════════════════
+  WHAT YOU'LL SEE:
+
+  ✅ A bright yellow floating button in the bottom-right corner
+  ✅ Click to open the chat/voice interface
+  ✅ Fill in name, email, and issue description
+  ✅ Choose between text chat or voice call
+  ✅ AI-powered support with conversation history
+  ✅ Feedback modal after session ends
+
+  CUSTOMIZATION (Optional):
+
+  1. Change widget placement:
+     <div id="my-custom-support"></div>
+     <script>
+       CourtneyWidget.init({
+         target: '#my-custom-support',
+         apiEndpoint: 'https://vapi-embed-production.up.railway.app/api/chat',
+         publicKey: '99d4ee33-0c22-4f57-a457-2266fab4a844',
+         assistantId: '31409e97-631c-48e0-89f5-4b6ba0f1c1df'
+       });
+     </script>
+
+  2. Multiple widgets on same page:
+     Just use different IDs for each container
+
+  ═══════════════════════════════════════════════════════════════
+  SUPPORT:
+  - Widget hosted on: Railway (https://vapi-embed-production.up.railway.app)
+  - Powered by: VAPI AI
+  - Source code: https://github.com/Anshul-Keote/VAPI-Embed
+  ═══════════════════════════════════════════════════════════════
+-->
