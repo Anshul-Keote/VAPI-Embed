@@ -174,12 +174,15 @@ export default function CourtneyWidget() {
 
         const responses = await chatClientRef.current.sendMessage(content, userContext);
 
-        // Add assistant responses to UI
-        responses.forEach((msg) => {
-          if (msg.role === 'assistant' && msg.content) {
-            addMessage('assistant', msg.content);
-          }
-        });
+        // Combine all assistant responses into a single message
+        const assistantMessages = responses
+          .filter((msg) => msg.role === 'assistant' && msg.content)
+          .map((msg) => msg.content)
+          .join(' ');
+
+        if (assistantMessages) {
+          addMessage('assistant', assistantMessages);
+        }
       } else if (widgetState === 'voice') {
         // Use VAPI Web SDK for voice mode (not applicable for text sending in voice)
         // Voice mode handles messages via transcript events
