@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOCAL Courtney Widget Test - Development Testing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .demo-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #0a4728;
+        }
+        .highlight {
+            background: #e1f700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .status {
+            background: #FF6B6B;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .url-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .changes-note {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-content">
+        <div class="status">🔧 LOCAL DEVELOPMENT MODE</div>
+        <h1>Local Courtney Widget Test</h1>
+        <p>Testing <span class="highlight">local backend changes</span> before pushing to production!</p>
+
+        <div class="url-info">
+            <strong>Local Backend:</strong> http://localhost:3001<br>
+            <strong>Chat API:</strong> http://localhost:3001/api/chat<br>
+            <strong>Widget Files:</strong> http://localhost:3001/courtney-widget.*
+        </div>
+
+        <div class="changes-note">
+            <strong>⚠️ Testing Mode</strong><br>
+            This page connects to your local backend server. Make sure the backend is running on port 3001.
+            Any changes you made to the backend logic will be reflected here.
+        </div>
+
+        <h2>What's Running Locally</h2>
+        <ul>
+            <li>✅ Backend API on localhost:3001</li>
+            <li>✅ Widget JavaScript served locally</li>
+            <li>✅ Widget CSS with Tailwind styles</li>
+            <li>✅ CORS enabled for local testing</li>
+            <li>✅ VAPI integration configured</li>
+        </ul>
+
+        <h2>Features to Test</h2>
+        <ul>
+            <li>💬 Text chat with AI assistant</li>
+            <li>🎤 Voice call integration</li>
+            <li>⭐ User feedback collection</li>
+            <li>🎨 CourtsApp branding</li>
+            <li>🔄 Your recent backend changes</li>
+        </ul>
+
+        <h2>Look at the bottom right corner!</h2>
+        <p>The bright yellow floating button is your widget running with local backend.</p>
+    </div>
+
+    <!-- Widget Container -->
+    <div id="courtney-widget"></div>
+
+    <!-- Load Widget CSS from Local Server -->
+    <link rel="stylesheet" href="http://localhost:3001/courtney-widget.css">
+
+    <!-- Load Widget JavaScript from Local Server -->
+    <script src="http://localhost:3001/courtney-widget.umd.js"></script>
+
+    <!-- Initialize Widget -->
+    <script>
+        CourtneyWidget.init({
+            target: '#courtney-widget',
+            apiEndpoint: 'http://localhost:3001/api/chat',
+            publicKey: '99d4ee33-0c22-4f57-a457-2266fab4a844',
+            assistantId: '31409e97-631c-48e0-89f5-4b6ba0f1c1df'
+        });
+
+        console.log('✅ Courtney Widget initialized successfully from LOCAL SERVER!');
+        console.log('📍 Backend URL: http://localhost:3001');
+    </script>
+</body>
+</html>
