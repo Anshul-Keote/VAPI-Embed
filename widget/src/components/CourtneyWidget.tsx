@@ -27,6 +27,8 @@ export default function CourtneyWidget() {
   const vapiClientRef = useRef<VapiClient | null>(null);
   const chatClientRef = useRef<ChatClient | null>(null);
   const messageIdCounter = useRef(0);
+  const streamingBuffer = useRef<string>(''); // Buffer for streaming LLM chunks
+  const bufferTimeoutRef = useRef<number | null>(null); // Timeout to release buffer
 
   useEffect(() => {
     // Initialize VAPI client for voice calls
@@ -53,22 +55,92 @@ export default function CourtneyWidget() {
     };
   }, []);
 
+  const releaseBuffer = () => {
+    if (streamingBuffer.current.trim()) {
+      console.log('[Widget] Releasing buffer as complete message:', streamingBuffer.current);
+      addMessage('assistant', streamingBuffer.current.trim());
+      streamingBuffer.current = ''; // Clear buffer
+    }
+    // Clear any pending timeout
+    if (bufferTimeoutRef.current) {
+      clearTimeout(bufferTimeoutRef.current);
+      bufferTimeoutRef.current = null;
+    }
+  };
+
   const handleVapiMessage = (message: any) => {
     console.log('[Widget] Received VAPI message:', message);
+    console.log('[Widget] Message type:', message.type, '| Role:', message.role);
 
-    // Only handle transcript messages for voice mode
-    // Filter: Only show FINAL transcripts (not partial), and skip system messages
+    // Handle conversation-update (streaming LLM chunks)
+    if (message.type === 'conversation-update') {
+      console.log('[Widget] Conversation update - buffering streaming chunks');
+      // Accumulate streaming chunks in buffer
+      if (message.messages && Array.isArray(message.messages)) {
+        const lastMessage = message.messages[message.messages.length - 1];
+        if (lastMessage && lastMessage.role === 'assistant' && lastMessage.content) {
+          // Append chunk to buffer (streaming)
+          streamingBuffer.current += lastMessage.content;
+          console.log('[Widget] Buffered chunk:', lastMessage.content);
+          console.log('[Widget] Current buffer:', streamingBuffer.current);
+
+          // Reset the 4-second timeout
+          if (bufferTimeoutRef.current) {
+            clearTimeout(bufferTimeoutRef.current);
+          }
+          bufferTimeoutRef.current = setTimeout(() => {
+            console.log('[Widget] 4 seconds elapsed - releasing buffer');
+            releaseBuffer();
+          }, 4000);
+        }
+      }
+      return;
+    }
+
+    // Handle model output for assistant (if VAPI sends it)
+    if (message.type === 'model-output') {
+      console.log('[Widget] Model output event - buffering');
+      // model-output has 'output' field, not 'content'
+      const chunk = message.output || message.content || message.text;
+      if (chunk) {
+        streamingBuffer.current += chunk;
+        console.log('[Widget] Buffered chunk:', chunk);
+        console.log('[Widget] Current buffer:', streamingBuffer.current);
+
+        // Reset the 4-second timeout
+        if (bufferTimeoutRef.current) {
+          clearTimeout(bufferTimeoutRef.current);
+        }
+        bufferTimeoutRef.current = setTimeout(() => {
+          console.log('[Widget] 4 seconds elapsed - releasing buffer');
+          releaseBuffer();
+        }, 4000);
+      }
+      return;
+    }
+
+    // Handle transcript messages
     if (message.type === 'transcript') {
       // Only show final transcripts (ignore partial/interim transcripts)
       if (message.transcriptType === 'final' && message.transcript) {
-        // Skip system messages
-        if (message.role === 'system') {
-          console.log('[Widget] Skipping system message');
-          return;
-        }
+        // For user: Use transcript (their actual speech via STT)
+        if (message.role === 'user') {
+          console.log('[Widget] User spoke - releasing any buffered assistant message first');
+          // User is speaking = assistant is done, release buffer
+          releaseBuffer();
 
-        const role = message.role === 'user' ? 'user' : 'assistant';
-        addMessage(role, message.transcript);
+          // Now add user message
+          console.log('[Widget] Adding user message from transcript:', message.transcript);
+          addMessage('user', message.transcript);
+        }
+        // For assistant: IGNORE (we use buffering strategy instead)
+        else if (message.role === 'assistant') {
+          console.log('[Widget] IGNORING assistant transcript (using buffered model output instead)');
+          // Don't release buffer here - wait for user or timeout
+        }
+        else if (message.role === 'system') {
+          console.log('[Widget] Skipping system message');
+        }
       }
     }
   };
@@ -228,6 +300,11 @@ export default function CourtneyWidget() {
     setWidgetState('form');
     setIsSessionActive(false);
     setIsMuted(false);
+    streamingBuffer.current = ''; // Clear streaming buffer
+    if (bufferTimeoutRef.current) {
+      clearTimeout(bufferTimeoutRef.current);
+      bufferTimeoutRef.current = null;
+    }
   };
 
   const handleToggleMute = () => {

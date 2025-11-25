@@ -107,7 +107,9 @@ export default function ChatInterface({
                     : 'bg-white text-gray-900 shadow-sm border border-gray-200'
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap break-words">
+                  {message.content}
+                </p>
                 <span className="text-xs opacity-70 mt-1 block">
                   {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>

@@ -111,7 +111,11 @@ export class VapiClient {
       // Start call with user context passed as assistant overrides
       await this.vapi.start(this.assistantId, {
         variableValues: {
-          userName: userContext.name,
+          firstname: userContext.name,    // Match VAPI template {{firstname}}
+          lastname: '',                    // Empty lastname
+          email: userContext.email,        // Match VAPI template {{email}}
+          phone: '',                       // Empty phone
+          userName: userContext.name,      // Keep for backward compatibility
           userEmail: userContext.email,
           userIssue: userContext.issue,
         }
