@@ -46,6 +46,8 @@ export default function CourtneyWidget() {
     vapiClientRef.current.on('message', handleVapiMessage);
     vapiClientRef.current.on('call-end', handleCallEnd);
     vapiClientRef.current.on('error', handleVapiError);
+    vapiClientRef.current.on('speech-end', handleSpeechEnd);
+    vapiClientRef.current.on('user-interrupted', handleUserInterrupted);
 
     return () => {
       // Cleanup on unmount
@@ -68,6 +70,26 @@ export default function CourtneyWidget() {
     }
   };
 
+  const clearBuffer = () => {
+    console.log('[Widget] Clearing buffer without displaying (user interrupted)');
+    streamingBuffer.current = ''; // Clear buffer without displaying
+    // Clear any pending timeout
+    if (bufferTimeoutRef.current) {
+      clearTimeout(bufferTimeoutRef.current);
+      bufferTimeoutRef.current = null;
+    }
+  };
+
+  const handleSpeechEnd = (data: any) => {
+    console.log('[Widget] Speech ended - releasing buffer');
+    releaseBuffer();
+  };
+
+  const handleUserInterrupted = (data: any) => {
+    console.log('[Widget] User interrupted - clearing buffer without displaying');
+    clearBuffer();
+  };
+
   const handleVapiMessage = (message: any) => {
     console.log('[Widget] Received VAPI message:', message);
     console.log('[Widget] Message type:', message.type, '| Role:', message.role);
@@ -83,15 +105,7 @@ export default function CourtneyWidget() {
           streamingBuffer.current += lastMessage.content;
           console.log('[Widget] Buffered chunk:', lastMessage.content);
           console.log('[Widget] Current buffer:', streamingBuffer.current);
-
-          // Reset the 4-second timeout
-          if (bufferTimeoutRef.current) {
-            clearTimeout(bufferTimeoutRef.current);
-          }
-          bufferTimeoutRef.current = setTimeout(() => {
-            console.log('[Widget] 4 seconds elapsed - releasing buffer');
-            releaseBuffer();
-          }, 4000);
+          // Buffer will be released by speech-end event
         }
       }
       return;
@@ -106,15 +120,7 @@ export default function CourtneyWidget() {
         streamingBuffer.current += chunk;
         console.log('[Widget] Buffered chunk:', chunk);
         console.log('[Widget] Current buffer:', streamingBuffer.current);
-
-        // Reset the 4-second timeout
-        if (bufferTimeoutRef.current) {
-          clearTimeout(bufferTimeoutRef.current);
-        }
-        bufferTimeoutRef.current = setTimeout(() => {
-          console.log('[Widget] 4 seconds elapsed - releasing buffer');
-          releaseBuffer();
-        }, 4000);
+        // Buffer will be released by speech-end event
       }
       return;
     }
@@ -125,18 +131,14 @@ export default function CourtneyWidget() {
       if (message.transcriptType === 'final' && message.transcript) {
         // For user: Use transcript (their actual speech via STT)
         if (message.role === 'user') {
-          console.log('[Widget] User spoke - releasing any buffered assistant message first');
-          // User is speaking = assistant is done, release buffer
-          releaseBuffer();
-
-          // Now add user message
           console.log('[Widget] Adding user message from transcript:', message.transcript);
           addMessage('user', message.transcript);
+          // Note: Buffer is managed by speech-end (release) and user-interrupted (clear) events
         }
         // For assistant: IGNORE (we use buffering strategy instead)
         else if (message.role === 'assistant') {
           console.log('[Widget] IGNORING assistant transcript (using buffered model output instead)');
-          // Don't release buffer here - wait for user or timeout
+          // Buffer will be released by speech-end event
         }
         else if (message.role === 'system') {
           console.log('[Widget] Skipping system message');

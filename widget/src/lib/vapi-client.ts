@@ -98,6 +98,12 @@ export class VapiClient {
       console.error('[VAPI Event: error]', error);
       this.emit('error', error);
     }) as any);
+
+    // User interruption events (using type cast as event may not be in current SDK types)
+    (this.vapi as any).on('user-interrupted', ((data: any) => {
+      console.log('[VAPI Event: user-interrupted]', data);
+      this.emit('user-interrupted', data);
+    }) as any);
   }
 
   async startVoiceCall(userContext: UserContext) {
