@@ -17,6 +17,14 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'VAPI Proxy Server is running' });
 });
 
+// Config endpoint - serves public configuration for widget
+app.get('/api/config', (req, res) => {
+  res.json({
+    publicKey: process.env.VAPI_PUBLIC_KEY,
+    assistantId: process.env.VAPI_ASSISTANT_ID
+  });
+});
+
 // VAPI Chat Proxy Endpoint
 app.post('/api/chat', async (req, res) => {
   try {

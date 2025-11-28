@@ -137,6 +137,52 @@ npm run dev
 - CORS enabled for cross-origin requests
 - Environment variables for sensitive data
 
+## How AssistantID Works (Important!)
+
+### The Split Personality Bug (Now Fixed)
+
+The widget supports two communication modes: **Text Chat** (HTTP) and **Voice Calls** (WebRTC). Each mode handles the `assistantId` differently:
+
+**Voice Calls (WebRTC):**
+- Uses the `assistantId` passed to `CourtneyWidget.init()`
+- Goes directly to VAPI platform via Web SDK
+- Backend is NOT involved
+
+**Text Chat (HTTP):**
+- Frontend sends messages to backend `/api/chat`
+- **Backend IGNORES any assistantId from the request**
+- Always uses `process.env.VAPI_ASSISTANT_ID` from backend `.env`
+
+### Why This Matters
+
+If the frontend passes a different `assistantId` than what's in the backend's `.env`:
+
+```
+Voice Call: Uses assistantId from frontend → Assistant A
+Text Chat:  Uses assistantId from backend  → Assistant B
+
+Result: Split personality! Different assistants for different modes! ❌
+```
+
+### The Solution: Backend Configuration Endpoint
+
+The backend provides a `/api/config` endpoint that returns the assistant configuration:
+
+```javascript
+GET /api/config
+Response: {
+  "publicKey": "99d4ee33-0c22-4f57-a457-2266fab4a844",
+  "assistantId": "31409e97-631c-48e0-89f5-4b6ba0f1c1df"
+}
+```
+
+**For proper integration:** Frontends should fetch config from this endpoint and use the backend's `assistantId` for initialization. This ensures:
+- Voice calls use the same assistant as text chat ✅
+- Backend is the single source of truth ✅
+- No configuration duplication ✅
+
+See the Courtsapp Landing Page project for an example of this pattern.
+
 ## Configuration Options
 
 ```typescript

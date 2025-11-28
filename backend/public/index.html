@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOCAL Courtney Widget Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .demo-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #0a4728;
+        }
+        .highlight {
+            background: #e1f700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .status {
+            background: #3B82F6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .url-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-content">
+        <div class="status">🔧 RUNNING LOCALLY</div>
+        <h1>Local Courtney Widget Test</h1>
+        <p>This widget is running <span class="highlight">LOCALLY</span> with your latest changes!</p>
+
+        <div class="url-info">
+            <strong>Local URL:</strong> http://localhost:3001
+        </div>
+
+        <h2>What's Working</h2>
+        <ul>
+            <li>✅ Backend API running on localhost:3001</li>
+            <li>✅ Widget JavaScript served locally</li>
+            <li>✅ Widget CSS with Tailwind styles</li>
+            <li>✅ VAPI integration configured</li>
+            <li>✅ NEW: speech-end event handling</li>
+            <li>✅ NEW: user-interrupted event handling</li>
+        </ul>
+
+        <h2>Testing the Fixes</h2>
+        <ul>
+            <li>🎯 <strong>Ghost messages fix:</strong> Try interrupting the assistant mid-speech - message should NOT appear</li>
+            <li>🎯 <strong>Text/audio sync fix:</strong> Text should only appear AFTER assistant finishes speaking</li>
+        </ul>
+
+        <h2>Look at the bottom right corner!</h2>
+        <p>The bright yellow floating button is your widget with the latest changes.</p>
+    </div>
+
+    <!-- Widget Container -->
+    <div id="courtney-widget"></div>
+
+    <!-- Load Widget CSS from LOCAL server -->
+    <link rel="stylesheet" href="/courtney-widget.css">
+
+    <!-- Load Widget JavaScript from LOCAL server -->
+    <script src="/courtney-widget.umd.js"></script>
+
+    <!-- Initialize Widget -->
+    <script>
+        CourtneyWidget.init({
+            target: '#courtney-widget',
+            apiEndpoint: 'http://localhost:3001/api/chat',
+            publicKey: '99d4ee33-0c22-4f57-a457-2266fab4a844',
+            assistantId: '31409e97-631c-48e0-89f5-4b6ba0f1c1df'
+        });
+
+        console.log('✅ Courtney Widget initialized successfully from LOCALHOST!');
+    </script>
+</body>
+</html>
